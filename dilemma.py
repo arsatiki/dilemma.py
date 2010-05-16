@@ -73,7 +73,11 @@ def tournament(contestants, rounds, scoring):
 
 def main():
     rounds = int(sys.argv[1])
-    scoring = build_scorer(0, -1, -5, -10)
+    if len(sys.argv) >= 6:
+        TRPS = map(int, sys.argv[2:6])
+    else:
+        TRPS = (0, -1, -5, -10)
+    scoring = build_scorer(*TRPS)
     scores = tournament(CONTESTANTS, rounds, scoring)
 
     for p, s in sorted(scores.iteritems(), key=itemgetter(1), reverse=True):
