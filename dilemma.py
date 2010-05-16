@@ -5,13 +5,15 @@ import sys
 import itertools
 import strategies
 from collections import defaultdict
+from operator import itemgetter
 
 from strategies import COOPERATE, DEFECT
 
 
 CONTESTANTS = {'titfortat': strategies.titfortat,
                'saint': strategies.always_cooperate,
-               'demon': strategies.always_defect}
+               'demon': strategies.always_defect,
+               'unforgiving10': strategies.unforgiving}
 
 def build_scorer(temptation, reward, punishment, sucker):
     """
@@ -45,12 +47,6 @@ def build_scorer(temptation, reward, punishment, sucker):
     }
 
 
-def tournament(contestants):
-    """Returns an all against all sequence of player pairs.
-    tournament
-    """
-    return itertools.combinations(contestants, 2)
-
 def iterate(rounds, f1, f2):
     r1, state1 = f1(None)
     r2, state2 = f2(None)
@@ -60,24 +56,29 @@ def iterate(rounds, f1, f2):
         r2, state2 = f2(r1, state2)
         yield r1, r2
 
-def main():
-    rounds = int(sys.argv[1])
-    
-    scoring = build_scorer(0, -1, -5, -10)
+def tournament(contestants, rounds, scoring):
     scores = defaultdict(int)
     
-    for p1, p2 in tournament(CONTESTANTS):
-        f1, f2 = CONTESTANTS[p1], CONTESTANTS[p2]
-        # reply1, reply2 = f1(None), f2(None)
+    for p1, p2 in itertools.combinations(contestants, 2):
+        f1, f2 = contestants[p1], contestants[p2]
+
         for reply1, reply2 in iterate(rounds, f1, f2):
             # Restrict to strategies that do not use the cost matrix.
             s1, s2 = scoring[reply1, reply2]
             scores[p1] += s1
             scores[p2] += s2
     
-    for p in scores:
-        print "%16s: %.4f" % (p, scores[p] / rounds)
-            
+    return scores
+    
+
+def main():
+    rounds = int(sys.argv[1])
+    scoring = build_scorer(0, -1, -5, -10)
+    scores = tournament(CONTESTANTS, rounds, scoring)
+
+    for p, s in sorted(scores.iteritems(), key=itemgetter(1), reverse=True):
+        print "%16s: %.4f" % (p, s / rounds)
+    
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
