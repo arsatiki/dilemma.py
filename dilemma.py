@@ -1,10 +1,13 @@
 # encoding: utf-8
+from __future__ import division
+
 import sys
 import itertools
 import strategies
 from collections import defaultdict
 
 from strategies import COOPERATE, DEFECT
+
 
 CONTESTANTS = {'titfortat': strategies.titfortat,
                'saint': strategies.always_cooperate,
