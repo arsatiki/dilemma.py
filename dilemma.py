@@ -11,7 +11,10 @@ from tournament import build_scorer, iterate, run_tournament
 CONTESTANTS = {'titfortat': strategies.titfortat,
                'saint': strategies.always_cooperate,
                'demon': strategies.always_defect,
-               'unforgiving10': strategies.unforgiving}
+               'unforgiving3': strategies.unforgiving(3),
+               'unforgiving10': strategies.unforgiving(10),
+               'unforgiving100': strategies.unforgiving(100),
+               'random': strategies.randomized}
     
 
 def main():

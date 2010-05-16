@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+import random
+
 from decorators import simple
 
 """Strategy collection for the iterated prisoner's dilemma.
@@ -15,6 +17,7 @@ DEFECT = 'defect'
 
 always_defect = simple(lambda prev: DEFECT)
 always_cooperate = simple(lambda prev: COOPERATE)
+randomized = simple(lambda prev: random.choice((DEFECT, COOPERATE)))
 
 @simple
 def titfortat(tat):
@@ -31,16 +34,18 @@ def titfortat(tat):
         return COOPERATE
     return tat
 
-def unforgiving(prev, defect_counter=0):
-    """Start out trusting, but if other defects, punish for 10 turns"""
-    if defect_counter:
-        return DEFECT, defect_counter - 1
+def unforgiving(timespan):
+    """a meta strategy"""
+    def strategy(prev, defect_counter=0):
+        """Start out trusting, but if other defects, punish for n turns"""
+        if defect_counter:
+            return DEFECT, defect_counter - 1
     
-    if prev == DEFECT:
-        return DEFECT, 10
+        if prev == DEFECT:
+            return DEFECT, timespan
     
-    return COOPERATE, 0
-
+        return COOPERATE, 0
+    return strategy
 
 if __name__ == '__main__':
     import doctest
