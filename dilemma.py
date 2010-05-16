@@ -52,11 +52,12 @@ def tournament(contestants):
     return itertools.combinations(contestants, 2)
 
 def iterate(rounds, f1, f2):
-    r1, r2 = f1(None), f2(None)
+    r1, state1 = f1(None)
+    r2, state2 = f2(None)
     yield r1, r2
     for k in range(rounds - 1):
-        r1 = f1(r2)
-        r2 = f2(r1)
+        r1, state1 = f1(r2, state1)
+        r2, state2 = f2(r1, state2)
         yield r1, r2
 
 def main():
@@ -69,8 +70,7 @@ def main():
         f1, f2 = CONTESTANTS[p1], CONTESTANTS[p2]
         # reply1, reply2 = f1(None), f2(None)
         for reply1, reply2 in iterate(rounds, f1, f2):
-            # Restrict to strategies that do not use the cost
-            # matrix.
+            # Restrict to strategies that do not use the cost matrix.
             s1, s2 = scoring[reply1, reply2]
             scores[p1] += s1
             scores[p2] += s2
