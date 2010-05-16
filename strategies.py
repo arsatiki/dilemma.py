@@ -19,6 +19,12 @@ def titfortat(tat):
         return COOPERATE
     return tat
 
+def always_defect(prev):
+    return DEFECT
+
+def always_cooperate(prev):
+    return COOPERATE
+
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
