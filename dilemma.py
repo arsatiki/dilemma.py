@@ -29,12 +29,12 @@ def build_scorer(temptation, reward, punishment, sucker):
     >>> b[COOPERATE, COOPERATE]
     (3, 3)
     """
-    if temptation < reward:
+    if temptation <= reward:
         raise ValueError("Temptation to defect must be greater than reward for cooperation")
-    if reward < punishment:
+    if reward <= punishment:
         message = "Reward for coperation must be greater than\npunishment for mutual defection"
         raise ValueError("")
-    if punishment < sucker:
+    if punishment <= sucker:
         raise ValueError("Punishment for mutual defection must be greater than the sucker's penalty.")
     if not (2 * reward > temptation + sucker):
         raise ValueError("Cooperation not Pareto optimal")
